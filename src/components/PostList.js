@@ -6,7 +6,6 @@ export default function PostList ({ list }) {
   return (
     <ul>
       {list.map(p => {
-
         return (<li key={p.id}>
           <Post post={p} commentList={[]} />
         </li>)

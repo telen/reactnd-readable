@@ -20,19 +20,19 @@ const postInitState = {
     postObj,
   ],
   categories: [],
-
 }
 
 function posts (state = postInitState, action) {
   switch (action.type) {
     case LIST_POSTS:
-      const { category, sortBy } = action
+
+      const { posts } = action
       return {
-        postList: [],
+        postList: posts,
         categories: [],
       }
       break
-      
+
     default:
       return state
   }

@@ -8,9 +8,11 @@ export const NEW_COMMENT = 'NEW_COMMENT'
 export const EDIT_COMMENT = 'EDIT_COMMENT'
 
 
-export function listPosts ({ category, sortBy }) {
+export function listPosts (posts) {
+
   return {
     type: LIST_POSTS,
+    posts,
   }
 }
 

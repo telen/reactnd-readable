@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { listPosts } from '../actions'
 import './App.css';
 import PostList from './PostList'
 
@@ -31,22 +32,43 @@ class App extends Component {
     ]
   }
 
+  componentDidMount() {
+    const { fetchPosts } = this.props
+    console.log('did mount')
+    fetchPosts()
+  }
+
+
   render() {
+    const { list } = this.props
     const { postList, commentList } = this.state
 
     return (
       <div className="App">
         <h1>MyReadable</h1>
-        <PostList list={postList} />
+        <PostList list={list} />
       </div>
     )
   }
 }
 
-function mapStateToProps(state) {
+const fetchPosts = () => (dispatch, getState) => {
+  // dispatch(fetching)
+  return fetch('http://localhost:5001/posts', { headers: { 'Authorization': 'whatever-you-want' }})
+    .then(response => response.json())
+    .then(posts => dispatch(listPosts(posts)))
+}
+
+function mapStateToProps({ postList }) {
   return {
-    list: state.postList,
+    list: postList,
   }
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchPosts: () => dispatch(fetchPosts())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
