@@ -12,7 +12,9 @@ export function listPosts (posts) {
 
   return {
     type: LIST_POSTS,
-    posts,
+    payload: {
+      posts,
+    }
   }
 }
 
@@ -28,11 +30,11 @@ export function newPost ({ title, body, author, category, }) {
   }
 }
 
-export function viewPost ({ postId }) {
+export function viewPost ({ post }) {
   return {
     type: POST_DETAIL,
     payload: {
-      postId,
+      post,
     }
   }
 }

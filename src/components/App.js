@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { listPosts, newPost, viewPost, commentsOfPost, getAllCategories } from '../actions'
 import './App.css';
 import PostList from './PostList'
@@ -22,6 +23,7 @@ class App extends Component {
   }
 
   render() {
+
     console.log('App mapStateToProps:', this.props)
     const { list, categories } = this.props
 
@@ -57,13 +59,23 @@ class App extends Component {
 
 const fetchPosts = () => (dispatch, getState) => {
   // dispatch(fetching)
-  return fetch('http://localhost:5001/posts', { headers: { 'Authorization': 'whatever-you-want' }})
+  return fetch('http://localhost:5001/posts',
+      { headers: { 'Authorization': 'whatever-you-want' }})
     .then(response => response.json())
     .then(posts => dispatch(listPosts(posts)))
 }
 
+const fetchPost = (postId) => (dispatch, getState) => {
+  // dispatch(fetching)
+  return fetch(`http://localhost:5001/posts/${postId}`,
+      { headers: { 'Authorization': 'whatever-you-want' }})
+    .then(response => response.json())
+    .then(post => dispatch(viewPost(post)))
+}
+
 const fetchCategories = () => (dispatch, getState) => {
-  return fetch('http://localhost:5001/categories', { headers: { 'Authorization': 'whatever-you-want' }})
+  return fetch('http://localhost:5001/categories',
+      { headers: { 'Authorization': 'whatever-you-want' }})
     .then(response => response.json())
     .then(categories => dispatch(getAllCategories(categories)))
 }
@@ -79,7 +91,8 @@ function mapDispatchToProps(dispatch) {
   return {
     fetchPosts: () => dispatch(fetchPosts()),
     fetchCategories: () => dispatch(fetchCategories()),
+    fetchPost: (postId) => dispatch(fetchPost(postId)),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

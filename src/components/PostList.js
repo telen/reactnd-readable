@@ -1,5 +1,5 @@
 import React from 'react'
-import Post from './Post'
+import DigestPost from './DigestPost'
 
 export default function PostList ({ history, list, onViewPost }) {
 
@@ -7,11 +7,10 @@ export default function PostList ({ history, list, onViewPost }) {
     <ul>
       {list.map(p => {
         return (<li key={p.id}>
-          <Post post={p} commentList={[]} />
-          <a onClick={(e) => {
-            onViewPost(p.id)
-            history.push(`/post/${p.id}`)
-          }}>View Post</a>
+          <DigestPost
+            history={history}
+            onViewPost={onViewPost}
+            post={p} />
         </li>)
       })}
     </ul>
