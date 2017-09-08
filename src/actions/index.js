@@ -46,8 +46,11 @@ export function commentsOfPost ({ postId }) {
   }
 }
 
-export function getAllCategories ({}) {
+export function getAllCategories ({ categories }) {
   return {
     type: CATEGORY_ALL,
+    payload: {
+      categories,
+    }
   }
 }

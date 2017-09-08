@@ -19,3 +19,10 @@
 .App-intro {
   font-size: large;
 }
+
+.catList li {
+  display: inline-block;
+  padding: 0 10px;
+  text-decoration: underline;
+  color: blue;
+}

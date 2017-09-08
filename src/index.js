@@ -13,7 +13,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION__ || compose
 
 const store = createStore(
   reducer,
-  applyMiddleware(thunk)
+  // composeEnhancers(
+    applyMiddleware(thunk)
+  // )
 )
 
 ReactDOM.render(

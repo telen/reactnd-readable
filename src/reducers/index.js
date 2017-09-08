@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux'
 
 import {
-  LIST_POSTS
+  LIST_POSTS,
+  CATEGORY_ALL
 } from '../actions'
 
 const postObj = {
@@ -25,14 +26,20 @@ const postInitState = {
 function posts (state = postInitState, action) {
   switch (action.type) {
     case LIST_POSTS:
-
       const { posts } = action
       return {
         postList: posts,
         categories: [],
       }
       break
-
+    case CATEGORY_ALL:
+      const { payload } = action
+      console.log(action)
+      return {
+        ...state,
+        categories: payload.categories,
+      }
+      break;
     default:
       return state
   }
