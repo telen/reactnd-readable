@@ -30,7 +30,7 @@ export function newPost ({ title, body, author, category, }) {
   }
 }
 
-export function viewPost ({ post }) {
+export function viewPost (post) {
   return {
     type: POST_DETAIL,
     payload: {

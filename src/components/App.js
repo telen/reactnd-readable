@@ -13,9 +13,17 @@ class App extends Component {
 
   componentDidMount() {
     const { fetchPosts, fetchCategories } = this.props
-    console.log('did mount')
     fetchPosts()
     fetchCategories()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { fetchPost } = this.props
+    if (this.props.location.pathname.startsWith('/post/')) {
+      const postId = this.props.location.pathname.replace('/post/', '');
+      // fetchPost(postId)
+    }
+    // console.log('props update', this.props.location.pathname)
   }
 
   hanldePostClick = (postId) => {
@@ -25,7 +33,7 @@ class App extends Component {
   render() {
 
     console.log('App mapStateToProps:', this.props)
-    const { list, categories } = this.props
+    const { list, categories, post } = this.props
 
     return (
       <div className="App">
@@ -45,6 +53,7 @@ class App extends Component {
           <Route path="/post/:id" render={({ match, history  }) => (
             <div>
               Post View
+              <p>postId {match.params.id}</p>
 
             </div>
           )} />
@@ -80,10 +89,11 @@ const fetchCategories = () => (dispatch, getState) => {
     .then(categories => dispatch(getAllCategories(categories)))
 }
 
-function mapStateToProps({ postList, categories }) {
+function mapStateToProps({ postList, categories, post }) {
   return {
     list: postList,
     categories,
+    post,
   }
 }
 
