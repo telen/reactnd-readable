@@ -12,9 +12,26 @@ import CategoryList from './CategoryList'
 class App extends Component {
 
   componentDidMount() {
-    const { fetchPosts, fetchCategories } = this.props
+    const { fetchPosts, fetchCategories, fetchPost, fetchPostComments, history, match, location } = this.props
     fetchPosts()
     fetchCategories()
+
+    if (location.pathname.startsWith('/post/')) {
+      const postId = location.pathname.replace('/post/', '');
+      fetchPost(postId)
+      fetchPostComments(postId)
+    }
+
+    history.listen((location, action) => {
+      console.log(`The current URL is ${location.pathname}${location.search}${location.hash}`)
+      console.log(`The last navigation action was ${action}`)
+      console.log(match)
+      if (location.pathname.startsWith('/post/')) {
+        const postId = location.pathname.replace('/post/', '');
+        fetchPost(postId)
+        fetchPostComments(postId)
+      }
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -33,8 +50,8 @@ class App extends Component {
   render() {
 
     console.log('App mapStateToProps:', this.props)
-    const { list, categories, post } = this.props
-
+    const { list, categories, post, comments } = this.props
+    console.log(comments)
     return (
       <div className="App">
         <h1>MyReadable</h1>
@@ -54,7 +71,10 @@ class App extends Component {
             <div>
               Post View
               <p>postId {match.params.id}</p>
-
+              <Post
+                post={post || {}}
+                commentList={comments || []}
+                />
             </div>
           )} />
           <Route render={() => (
@@ -82,6 +102,14 @@ const fetchPost = (postId) => (dispatch, getState) => {
     .then(post => dispatch(viewPost(post)))
 }
 
+const fetchPostComments = (postId) => (dispatch, getState) => {
+  // dispatch(fetching)
+  return fetch(`http://localhost:5001/posts/${postId}/comments`,
+      { headers: { 'Authorization': 'whatever-you-want' }})
+    .then(response => response.json())
+    .then(comments => dispatch(commentsOfPost(comments)))
+}
+
 const fetchCategories = () => (dispatch, getState) => {
   return fetch('http://localhost:5001/categories',
       { headers: { 'Authorization': 'whatever-you-want' }})
@@ -89,11 +117,12 @@ const fetchCategories = () => (dispatch, getState) => {
     .then(categories => dispatch(getAllCategories(categories)))
 }
 
-function mapStateToProps({ postList, categories, post }) {
+function mapStateToProps({ postList, categories, post, comments }) {
   return {
     list: postList,
     categories,
     post,
+    comments,
   }
 }
 
@@ -102,7 +131,8 @@ function mapDispatchToProps(dispatch) {
     fetchPosts: () => dispatch(fetchPosts()),
     fetchCategories: () => dispatch(fetchCategories()),
     fetchPost: (postId) => dispatch(fetchPost(postId)),
+    fetchPostComments: (postId) => dispatch(fetchPostComments(postId)),
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

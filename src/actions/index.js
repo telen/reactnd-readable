@@ -39,11 +39,11 @@ export function viewPost (post) {
   }
 }
 
-export function commentsOfPost ({ postId }) {
+export function commentsOfPost (comments) {
   return {
     type: COMMENTS_OF_POST,
     payload: {
-      postId,
+      comments,
     }
   }
 }

@@ -4,6 +4,7 @@ import {
   LIST_POSTS,
   POST_DETAIL,
   CATEGORY_ALL,
+  COMMENTS_OF_POST,
 } from '../actions'
 
 const postObj = {
@@ -43,6 +44,12 @@ function posts (state = postInitState, action) {
       return {
         ...state,
         post: payload.post,
+      }
+      break;
+    case COMMENTS_OF_POST:
+      return {
+        ...state,
+        comments: payload.comments,
       }
       break;
     default:
