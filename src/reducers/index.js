@@ -5,6 +5,8 @@ import {
   POST_DETAIL,
   CATEGORY_ALL,
   COMMENTS_OF_POST,
+  OPEN_MODAL,
+  CLOSE_MODAL
 } from '../actions'
 
 const postObj = {
@@ -49,7 +51,20 @@ function posts (state = postInitState, action) {
     case COMMENTS_OF_POST:
       return {
         ...state,
-        comments: payload.comments,
+        comments: payload.comments.sort((a, b) => a.score > b.score),
+      }
+      break;
+    case OPEN_MODAL:
+      console.log(payload)
+      return {
+        ...state,
+        newPostModalOpen: true,
+      }
+      break;
+    case CLOSE_MODAL:
+      return {
+        ...state,
+        newPostModalOpen: false,
       }
       break;
     default:

@@ -1,11 +1,14 @@
 export const LIST_POSTS = 'LIST_POSTS'
 export const POST_DETAIL = 'POST_DETAIL'
 export const CATEGORY_ALL = 'CATEGORY_ALL'
+export const CATEGORY_POST = 'CATEGORY_POST'
 export const COMMENTS_OF_POST = 'COMMENTS_OF_POST'
 export const NEW_POST = 'NEW_POST'
 export const EDIT_POST = 'EDIT_POST'
 export const NEW_COMMENT = 'NEW_COMMENT'
 export const EDIT_COMMENT = 'EDIT_COMMENT'
+export const OPEN_MODAL = 'OPEN_MODAL'
+export const CLOSE_MODAL = 'CLOSE_MODAL'
 
 
 export function listPosts (posts) {
@@ -53,6 +56,33 @@ export function getAllCategories ({ categories }) {
     type: CATEGORY_ALL,
     payload: {
       categories,
+    }
+  }
+}
+
+export function getCategoryPosts ({ category }) {
+  return {
+    type: CATEGORY_POST,
+    payload: {
+      category,
+    }
+  }
+}
+
+export function openModal() {
+  return {
+    type: OPEN_MODAL,
+    payload: {
+      newPostModalOpen: true,
+    }
+  }
+}
+
+export function closeModal() {
+  return {
+    type: CLOSE_MODAL,
+    payload: {
+      newPostModalOpen: false,
     }
   }
 }

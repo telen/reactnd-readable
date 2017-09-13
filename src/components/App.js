@@ -2,19 +2,22 @@ import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { listPosts, newPost, viewPost, commentsOfPost, getAllCategories } from '../actions'
+import Modal from 'react-modal'
+import { listPosts, newPost, viewPost, commentsOfPost, getAllCategories,
+  getCategoryPosts, openModal, closeModal } from '../actions'
 import './App.css';
 import PostList from './PostList'
 import Post from './Post'
 import CategoryList from './CategoryList'
 
-
 class App extends Component {
 
   componentDidMount() {
-    const { fetchPosts, fetchCategories, fetchPost, fetchPostComments, history, match, location } = this.props
-    fetchPosts()
-    fetchCategories()
+    const { fetchPosts, fetchCategories, fetchPost, fetchPostComments,
+      fetchCategoryPosts,
+       history, match, location } = this.props
+       fetchPosts()
+       fetchCategories()
 
     if (location.pathname.startsWith('/post/')) {
       const postId = location.pathname.replace('/post/', '');
@@ -24,12 +27,20 @@ class App extends Component {
 
     history.listen((location, action) => {
       console.log(`The current URL is ${location.pathname}${location.search}${location.hash}`)
-      console.log(`The last navigation action was ${action}`)
-      console.log(match)
+      // console.log(`The last navigation action was ${action}`)
+      // console.log(match)
+      if (location.pathname === '/') {
+        fetchPosts()
+        fetchCategories()
+      }
       if (location.pathname.startsWith('/post/')) {
         const postId = location.pathname.replace('/post/', '');
         fetchPost(postId)
         fetchPostComments(postId)
+      }
+      if (location.pathname.startsWith('/category/')) {
+        const category = location.pathname.replace('/category/', '');
+        fetchCategoryPosts(category)
       }
     })
   }
@@ -47,14 +58,19 @@ class App extends Component {
     console.log('on post id click: ', postId)
   }
 
+
   render() {
 
     console.log('App mapStateToProps:', this.props)
-    const { list, categories, post, comments } = this.props
-    console.log(comments)
+    const { list, categories, post, comments, newPostModalOpen } = this.props
+    const { openModal, closeModal, } = this.props;
+
     return (
       <div className="App">
         <h1>MyReadable</h1>
+        <div>
+          <button onClick={() => openModal() }>new post</button>
+        </div>
         <Switch>
           <Route exact path="/" render={({ history }) => (
             <div>
@@ -77,10 +93,60 @@ class App extends Component {
                 />
             </div>
           )} />
+          <Route path="/category/:cat" render={({ match, history }) => (
+            <div>
+              <PostList
+                history={history}
+                list={list}
+                onViewPost={this.hanldePostClick} />
+            </div>
+          )} />
           <Route render={() => (
             <h2>404 Not Found</h2>
           )} />
         </Switch>
+        <Modal
+          className="modal"
+          overlayClassName='overlay'
+          isOpen={newPostModalOpen}
+          contentLabel='Modal'>
+          <div className="modal-close">
+            <button onClick={() => closeModal()}>close</button>
+          </div>
+          <div>new Post</div>
+
+          <form>
+            <div>
+              <label>
+                Title:
+                <input type="text" />
+              </label>
+            </div>
+            <div>
+              <label>
+                Author:
+                <input type="text" />
+              </label>
+            </div>
+            <div>
+              <label>
+                Category:
+                <select>
+                  {categories.map((category) => {
+                    return (<option value="{category.name}">{category.name}</option>)
+                  })}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>
+                Content:
+                <textarea  />
+              </label>
+            </div>
+            <input type="submit" value="Submit" />
+          </form>
+        </Modal>
       </div>
     )
   }
@@ -117,12 +183,20 @@ const fetchCategories = () => (dispatch, getState) => {
     .then(categories => dispatch(getAllCategories(categories)))
 }
 
-function mapStateToProps({ postList, categories, post, comments }) {
+const fetchCategoryPosts = (category) => (dispatch, getState) => {
+  return fetch(`http://localhost:5001/${category}/posts`,
+      { headers: { 'Authorization': 'whatever-you-want' }})
+    .then(response => response.json())
+    .then(posts => dispatch(listPosts(posts)))
+}
+
+function mapStateToProps({ postList, categories, post, comments, newPostModalOpen = false }) {
   return {
     list: postList,
     categories,
     post,
     comments,
+    newPostModalOpen,
   }
 }
 
@@ -132,6 +206,9 @@ function mapDispatchToProps(dispatch) {
     fetchCategories: () => dispatch(fetchCategories()),
     fetchPost: (postId) => dispatch(fetchPost(postId)),
     fetchPostComments: (postId) => dispatch(fetchPostComments(postId)),
+    fetchCategoryPosts: (category) => dispatch(fetchCategoryPosts(category)),
+    openModal: () => dispatch(openModal()),
+    closeModal: () => dispatch(closeModal()),
   }
 }
 
