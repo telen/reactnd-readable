@@ -6,7 +6,9 @@ import {
   CATEGORY_ALL,
   COMMENTS_OF_POST,
   OPEN_MODAL,
-  CLOSE_MODAL
+  CLOSE_MODAL,
+  EDITING_POST,
+  NEW_POST,
 } from '../actions'
 
 const postObj = {
@@ -21,10 +23,11 @@ const postObj = {
 }
 
 const postInitState = {
-  postList: [
-    postObj,
-  ],
+  postList: [],
   categories: [],
+  currentPost: {
+    category: 'react'
+  },
 }
 
 function posts (state = postInitState, action) {
@@ -32,8 +35,9 @@ function posts (state = postInitState, action) {
   switch (action.type) {
     case LIST_POSTS:
       return {
-        postList: payload.posts,
-        categories: [],
+        ...state,
+        postList: payload.posts.sort((a, b) => a.timestamp < b.timestamp),
+        newPostModalOpen: false,
       }
       break
     case CATEGORY_ALL:
@@ -55,7 +59,6 @@ function posts (state = postInitState, action) {
       }
       break;
     case OPEN_MODAL:
-      console.log(payload)
       return {
         ...state,
         newPostModalOpen: true,
@@ -66,6 +69,20 @@ function posts (state = postInitState, action) {
         ...state,
         newPostModalOpen: false,
       }
+      break;
+    case EDITING_POST:
+      let { currentPost } = state
+      currentPost = {
+        ...currentPost,
+        ...payload,
+      }
+      return {
+        ...state,
+        currentPost,
+      }
+      break;
+    case NEW_POST:
+      return state
       break;
     default:
       return state

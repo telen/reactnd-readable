@@ -9,6 +9,7 @@ export const NEW_COMMENT = 'NEW_COMMENT'
 export const EDIT_COMMENT = 'EDIT_COMMENT'
 export const OPEN_MODAL = 'OPEN_MODAL'
 export const CLOSE_MODAL = 'CLOSE_MODAL'
+export const EDITING_POST = 'EDITING_POST'
 
 
 export function listPosts (posts) {
@@ -30,6 +31,12 @@ export function newPost ({ title, body, author, category, }) {
       author,
       category,
     }
+  }
+}
+export function editingPost(payload) {
+  return {
+    type: EDITING_POST,
+    payload,
   }
 }
 

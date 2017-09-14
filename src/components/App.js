@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Modal from 'react-modal'
 import { listPosts, newPost, viewPost, commentsOfPost, getAllCategories,
-  getCategoryPosts, openModal, closeModal } from '../actions'
+  getCategoryPosts, openModal, closeModal, editingPost } from '../actions'
 import './App.css';
 import PostList from './PostList'
 import Post from './Post'
@@ -14,10 +14,9 @@ class App extends Component {
 
   componentDidMount() {
     const { fetchPosts, fetchCategories, fetchPost, fetchPostComments,
-      fetchCategoryPosts,
+      fetchCategoryPosts, fetchCategoriesAndPosts,
        history, match, location } = this.props
-       fetchPosts()
-       fetchCategories()
+       fetchCategoriesAndPosts()
 
     if (location.pathname.startsWith('/post/')) {
       const postId = location.pathname.replace('/post/', '');
@@ -30,8 +29,7 @@ class App extends Component {
       // console.log(`The last navigation action was ${action}`)
       // console.log(match)
       if (location.pathname === '/') {
-        fetchPosts()
-        fetchCategories()
+        fetchCategoriesAndPosts()
       }
       if (location.pathname.startsWith('/post/')) {
         const postId = location.pathname.replace('/post/', '');
@@ -45,35 +43,52 @@ class App extends Component {
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { fetchPost } = this.props
-    if (this.props.location.pathname.startsWith('/post/')) {
-      const postId = this.props.location.pathname.replace('/post/', '');
-      // fetchPost(postId)
-    }
-    // console.log('props update', this.props.location.pathname)
-  }
-
   hanldePostClick = (postId) => {
     console.log('on post id click: ', postId)
+  }
+
+  handleTitleChange = (event) => {
+    const { handleEditing } = this.props
+    handleEditing({ title: event.target.value })
+  }
+  handleAuthorChange = (event) => {
+    const { handleEditing } = this.props
+    handleEditing({ author: event.target.value })
+  }
+  handleCategoryChange = (event) => {
+    const { handleEditing } = this.props
+    handleEditing({ category: event.target.value })
+  }
+  handleBodyChange = (event) => {
+    const { handleEditing } = this.props
+    handleEditing({ body: event.target.value })
+  }
+  handleSubmit = (event) => {
+    const { currentPost, createPostAndFetchAllPost } = this.props
+    currentPost.timestamp = Date.now()
+    currentPost.id = Math.random().toString(36).slice(2)
+
+    createPostAndFetchAllPost(currentPost)
+    event.preventDefault()
   }
 
 
   render() {
 
     console.log('App mapStateToProps:', this.props)
-    const { list, categories, post, comments, newPostModalOpen } = this.props
+    const { list, categories, post, comments, newPostModalOpen, currentPost } = this.props
     const { openModal, closeModal, } = this.props;
 
     return (
       <div className="App">
         <h1>MyReadable</h1>
-        <div>
-          <button onClick={() => openModal() }>new post</button>
-        </div>
+
         <Switch>
           <Route exact path="/" render={({ history }) => (
             <div>
+              <div>
+                <button onClick={() => openModal() }>new post</button>
+              </div>
               <CategoryList
                 history={history}
                 categories={categories} />
@@ -115,25 +130,25 @@ class App extends Component {
           </div>
           <div>new Post</div>
 
-          <form>
+          <form onSubmit={this.handleSubmit}>
             <div>
               <label>
                 Title:
-                <input type="text" />
+                <input type="text" onChange={this.handleTitleChange} required/>
               </label>
             </div>
             <div>
               <label>
                 Author:
-                <input type="text" />
+                <input type="text" onChange={this.handleAuthorChange} required/>
               </label>
             </div>
             <div>
               <label>
                 Category:
-                <select>
+                <select onChange={this.handleCategoryChange}>
                   {categories.map((category) => {
-                    return (<option value="{category.name}">{category.name}</option>)
+                    return (<option key={category.name} value={category.name}>{category.name}</option>)
                   })}
                 </select>
               </label>
@@ -141,7 +156,7 @@ class App extends Component {
             <div>
               <label>
                 Content:
-                <textarea  />
+                <textarea  onChange={this.handleBodyChange} required/>
               </label>
             </div>
             <input type="submit" value="Submit" />
@@ -168,6 +183,25 @@ const fetchPost = (postId) => (dispatch, getState) => {
     .then(post => dispatch(viewPost(post)))
 }
 
+const createPost = (post) => (dispatch, getState) => {
+  // dispatch(fetching)
+  return fetch('http://localhost:5001/posts',
+      {
+        headers: { 'Authorization': 'whatever-you-want',
+        'Content-Type': 'application/json' },
+        method: 'POST',
+        body: JSON.stringify(post),
+      })
+      .then(response => response.json())
+      .then(resp => dispatch(newPost(resp)))
+}
+/* combine create post */
+const createPostAndFetchAllPost = (post) => (dispatch, getState) => {
+  return dispatch(createPost(post)).then(() => {
+    return dispatch(fetchCategoriesAndPosts())
+  })
+}
+
 const fetchPostComments = (postId) => (dispatch, getState) => {
   // dispatch(fetching)
   return fetch(`http://localhost:5001/posts/${postId}/comments`,
@@ -183,6 +217,13 @@ const fetchCategories = () => (dispatch, getState) => {
     .then(categories => dispatch(getAllCategories(categories)))
 }
 
+/* combine fetch all categories and posts */
+const fetchCategoriesAndPosts = () => (dispatch, getState) => {
+  return dispatch(fetchCategories()).then(() => {
+    return dispatch(fetchPosts())
+  })
+}
+
 const fetchCategoryPosts = (category) => (dispatch, getState) => {
   return fetch(`http://localhost:5001/${category}/posts`,
       { headers: { 'Authorization': 'whatever-you-want' }})
@@ -190,25 +231,32 @@ const fetchCategoryPosts = (category) => (dispatch, getState) => {
     .then(posts => dispatch(listPosts(posts)))
 }
 
-function mapStateToProps({ postList, categories, post, comments, newPostModalOpen = false }) {
+function mapStateToProps({ postList, categories, post, comments, newPostModalOpen = false, currentPost }) {
   return {
     list: postList,
     categories,
     post,
     comments,
     newPostModalOpen,
+    currentPost,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchPosts: () => dispatch(fetchPosts()),
+    fetchPosts: () => dispatch(fetchPosts()).then(() => {
+      console.log('fetched posts.')
+    }),
     fetchCategories: () => dispatch(fetchCategories()),
+    fetchCategoriesAndPosts: () => dispatch(fetchCategoriesAndPosts()),
     fetchPost: (postId) => dispatch(fetchPost(postId)),
     fetchPostComments: (postId) => dispatch(fetchPostComments(postId)),
     fetchCategoryPosts: (category) => dispatch(fetchCategoryPosts(category)),
     openModal: () => dispatch(openModal()),
     closeModal: () => dispatch(closeModal()),
+    handleEditing: (post) => dispatch(editingPost(post)),
+    createPost: (post) => dispatch(createPost(post)),
+    createPostAndFetchAllPost: (post) => dispatch(createPostAndFetchAllPost(post)),
   }
 }
 
