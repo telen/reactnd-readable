@@ -5,7 +5,7 @@ export default function CommentList({ commentList }) {
 
   return (
     <div>
-      <h4>Comments:</h4>
+      <h4>{commentList.length} comments:</h4>
       <ul>
         {commentList.map(comment => {
           return (

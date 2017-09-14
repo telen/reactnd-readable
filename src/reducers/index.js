@@ -9,6 +9,7 @@ import {
   CLOSE_MODAL,
   EDITING_POST,
   NEW_POST,
+  DELETE_POST,
 } from '../actions'
 
 const postObj = {
@@ -36,7 +37,7 @@ function posts (state = postInitState, action) {
     case LIST_POSTS:
       return {
         ...state,
-        postList: payload.posts.sort((a, b) => a.timestamp < b.timestamp),
+        postList: payload.posts.filter(a => !a.deleted).sort((a, b) => a.timestamp < b.timestamp),
         newPostModalOpen: false,
       }
       break
@@ -82,6 +83,9 @@ function posts (state = postInitState, action) {
       }
       break;
     case NEW_POST:
+      return state
+      break;
+    case DELETE_POST:
       return state
       break;
     default:

@@ -10,6 +10,7 @@ export const EDIT_COMMENT = 'EDIT_COMMENT'
 export const OPEN_MODAL = 'OPEN_MODAL'
 export const CLOSE_MODAL = 'CLOSE_MODAL'
 export const EDITING_POST = 'EDITING_POST'
+export const DELETE_POST = 'DELETE_POST'
 
 
 export function listPosts (posts) {
@@ -33,6 +34,14 @@ export function newPost ({ title, body, author, category, }) {
     }
   }
 }
+
+export function deletePost (payload) {
+  return {
+    type: DELETE_POST,
+    payload,
+  }
+}
+
 export function editingPost(payload) {
   return {
     type: EDITING_POST,

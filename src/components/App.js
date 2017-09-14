@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Modal from 'react-modal'
 import { listPosts, newPost, viewPost, commentsOfPost, getAllCategories,
-  getCategoryPosts, openModal, closeModal, editingPost } from '../actions'
+  getCategoryPosts, openModal, closeModal, editingPost, deletePost } from '../actions'
 import './App.css';
 import PostList from './PostList'
 import Post from './Post'
@@ -77,7 +77,7 @@ class App extends Component {
 
     console.log('App mapStateToProps:', this.props)
     const { list, categories, post, comments, newPostModalOpen, currentPost } = this.props
-    const { openModal, closeModal, } = this.props;
+    const { openModal, closeModal, deletePost } = this.props;
 
     return (
       <div className="App">
@@ -105,6 +105,7 @@ class App extends Component {
               <Post
                 post={post || {}}
                 commentList={comments || []}
+                onDelete={deletePost}
                 />
             </div>
           )} />
@@ -202,6 +203,14 @@ const createPostAndFetchAllPost = (post) => (dispatch, getState) => {
   })
 }
 
+const doDeletePost = (postId) => (dispatch, getState) => {
+  return fetch(`http://localhost:5001/posts/${postId}`,
+      {
+        headers: { 'Authorization': 'whatever-you-want' },
+        method: 'DELETE',
+      })
+    .then(res => dispatch(deletePost(res)))
+}
 const fetchPostComments = (postId) => (dispatch, getState) => {
   // dispatch(fetching)
   return fetch(`http://localhost:5001/posts/${postId}/comments`,
@@ -257,6 +266,7 @@ function mapDispatchToProps(dispatch) {
     handleEditing: (post) => dispatch(editingPost(post)),
     createPost: (post) => dispatch(createPost(post)),
     createPostAndFetchAllPost: (post) => dispatch(createPostAndFetchAllPost(post)),
+    deletePost: (postId) => dispatch(doDeletePost(postId)),
   }
 }
 

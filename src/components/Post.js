@@ -4,7 +4,7 @@ import CommentList from './CommentList'
 
 import { dateFormat } from '../utils'
 
-export default function Post ({ post, commentList }) {
+export default function Post ({ post, commentList, onDelete }) {
 
   return (
     <div>
@@ -14,8 +14,12 @@ export default function Post ({ post, commentList }) {
       <article>
         {post.body}
       </article>
-      <span>Category: {post.category}</span>
+      <span>Category: {post.category} </span>
       <p>Vode Score: {post.voteScore}</p>
+      <div>
+        <button onClick={() => { onDelete(post.id) }}>delete</button>
+        <button>edit</button>
+      </div>
       <CommentList commentList={commentList} />
     </div>
   )
