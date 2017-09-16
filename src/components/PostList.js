@@ -1,18 +1,26 @@
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import DigestPost from './DigestPost'
 
-export default function PostList ({ history, list, onViewPost }) {
+export default class PostList extends Component {
+  static propTypes = {
+    list: PropTypes.array.isRequired,
+    // onViewPost: PropTypes.func.isRequired,
+  }
 
-  return (
-    <ul>
-      {list.map(p => {
-        return (<li key={p.id}>
-          <DigestPost
-            history={history}
-            onViewPost={onViewPost}
-            post={p} />
-        </li>)
-      })}
-    </ul>
-  )
+  render () {
+    const { history, list, onViewPost } = this.props
+
+    return (
+      <ul>
+        {list.map(p => {
+          return (<li key={p.id}>
+            <DigestPost
+              history={history}
+              post={p} />
+          </li>)
+        })}
+      </ul>
+    )
+  }
 }
