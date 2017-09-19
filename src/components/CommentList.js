@@ -12,7 +12,7 @@ export default class CommentList extends Component {
         <ul>
           {commentList.map(comment => {
             return (
-              <li>
+              <li key={comment.id}>
                 <Comment comment={comment} />
               </li>
             )
