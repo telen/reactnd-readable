@@ -5,7 +5,7 @@ export default class CommentList extends Component {
 
   render() {
     const { commentList } = this.props
-    console.log(this.props)
+
     return (
       <div>
         <h4>{commentList.length} comments:</h4>

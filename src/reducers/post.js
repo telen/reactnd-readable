@@ -12,6 +12,7 @@ import {
 const initState = {
   post: {},
   postList: [],
+  currentPost: {},
 }
 const post = (state = initState, action) => {
   const { payload } = action
@@ -37,11 +38,10 @@ const post = (state = initState, action) => {
         newPostModalOpen: false,
       }
     case CREATE_POST:
-      const { postList } = action
+      const { postList } = state
       return {
         ...state,
         postList: postList.push(payload.post),
-        newPostModalOpen: false,
       }
     case EDITING_POST:
       let { currentPost } = state

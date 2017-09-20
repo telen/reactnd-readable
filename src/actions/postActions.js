@@ -51,11 +51,11 @@ function createPost(post) {
   }
 }
 
-function editingPost(post) {
+export function editingPost(post) {
   return {
     type: EDITING_POST,
     payload: {
-      post,
+      ...post,
     }
   }
 }
@@ -103,6 +103,7 @@ export const deletePostById = (postId) => (dispatch, getState) => {
 
 export const newPost = (post) => (dispatch, getState) => {
   dispatch(onCreatePost())
+
   return makeFetch('http://localhost:5001/posts', 'POST', post)
     .then(response => response.json())
     .then(post => dispatch(createPost(post)))

@@ -5,6 +5,8 @@ import { withRouter } from 'react-router-dom'
 import Post from '../components/Post'
 import CommentList from '../components/CommentList'
 
+import history from '../utils/history'
+
 import { fetchPost, deletePostById,
   editPost, voteUpPost, voteDownPost } from '../actions/postActions'
 import { fetchComments } from '../actions/commentActions'
@@ -13,7 +15,6 @@ class PostView extends Component {
 
   componentDidMount() {
     const { history, match, fetchPost } = this.props
-    console.log('postView', match)
     fetchPost(match.params.postId)
   }
 
@@ -38,7 +39,7 @@ function mapStateToProps({ post, comment }) {
     commentList: comment.comments,
   }
 }
-//TODO 删除之后的跳转？
+
 function mapDispatchToProps(dispatch) {
   return {
     fetchPost: (postId) => {
@@ -46,7 +47,11 @@ function mapDispatchToProps(dispatch) {
         return dispatch(fetchComments(postId))
       })
     },
-    deletePost: (postId) => dispatch(deletePostById(postId)),
+    deletePost: (postId) => {
+      return dispatch(deletePostById(postId)).then(() => {
+        history.goBack()
+      })
+    },
     voteUpPost: (postId) => dispatch(voteUpPost(postId)),
     voteDownPost: (postId) => dispatch(voteDownPost(postId)),
 
