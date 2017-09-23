@@ -39,7 +39,7 @@ function fetchPosts(category) {
   }
 }
 
-function fetchCategories() {
+export function fetchCategories() {
   return dispatch => {
     return makeFetch('http://localhost:5001/categories')
       .then(response => response.json())

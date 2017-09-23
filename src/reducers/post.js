@@ -13,6 +13,7 @@ const initState = {
   post: {},
   postList: [],
   currentPost: {},
+  newPostModalOpen: false,
 }
 const post = (state = initState, action) => {
   const { payload } = action
@@ -35,6 +36,7 @@ const post = (state = initState, action) => {
     case CANCEL_CREATE_POST:
       return {
         ...state,
+        currentPost: {},
         newPostModalOpen: false,
       }
     case CREATE_POST:

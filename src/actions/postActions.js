@@ -15,7 +15,7 @@ function requestPost() {
   }
 }
 
-function onCreatePost() {
+export function onCreatePost() {
   return {
     type: ON_CREATE_POST,
   }
@@ -57,6 +57,12 @@ export function editingPost(post) {
     payload: {
       ...post,
     }
+  }
+}
+
+function updatePost(post) {
+  return {
+
   }
 }
 
@@ -103,7 +109,6 @@ export const deletePostById = (postId) => (dispatch, getState) => {
 
 export const newPost = (post) => (dispatch, getState) => {
   dispatch(onCreatePost())
-
   return makeFetch('http://localhost:5001/posts', 'POST', post)
     .then(response => response.json())
     .then(post => dispatch(createPost(post)))
@@ -111,7 +116,7 @@ export const newPost = (post) => (dispatch, getState) => {
 
 export const editPost = (post) => (dispatch, getState) => {
   dispatch(requestPost())
-  return makeFetch(`http://localhost:5001/posts/${post.id}`, { title: post.title, body: post.body })
+  return makeFetch(`http://localhost:5001/posts/${post.id}`, 'PUT', { title: post.title, body: post.body })
   .then(response => response.json())
-  .then(post => dispatch(editingPost(post)))
+  .then(post => dispatch(receivePost(post)))
 }

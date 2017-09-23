@@ -10,10 +10,8 @@ import PostList from '../components/PostList'
 import NewPostModal from '../components/NewPostModal'
 
 import { fetchAllPosts } from '../actions/postListActions'
-import { editingPost, newPost } from '../actions/postActions'
+import { newPost } from '../actions/postActions'
 import { openModal, closeModal } from '../actions/common'
-
-import history from '../utils/history'
 
 class App extends Component {
   static propTypes = {
@@ -25,6 +23,15 @@ class App extends Component {
   componentDidMount() {
     const { fetchAllPosts, match, history } = this.props
     fetchAllPosts()
+  }
+
+  handleCreatePost(post) {
+    const { history, closeEditModal, createPost } = this.props
+    createPost(post).then(({ payload }) => {
+      // history.push()
+      closeEditModal()
+      history.push(`/${payload.post.category}/${payload.post.id}`)
+    })
   }
 
   render () {
@@ -42,12 +49,13 @@ class App extends Component {
           history={history}
           list={postList} />
         <NewPostModal
+          modalType={"create"}
           isOpen={newPostModalOpen}
           categories={categories}
           currentPost={currentPost}
           closeModal={closeEditModal}
           handleEditing={onEditingPost}
-          createPost={createPost} />
+          submitPost={this.handleCreatePost.bind(this)} />
       </div>
     )
   }
@@ -67,13 +75,7 @@ const mapDispatchToProps = (dispatch) => ({
   openEditModal: () => dispatch(openModal()),
   closeEditModal: () => dispatch(closeModal()),
   onEditingPost: (post) => dispatch(editingPost(post)),
-  createPost: (post) => {
-    return dispatch(newPost(post)).then(({ payload }) => {
-      console.log(payload.post)
-      history.push(`/${payload.post.category}/${payload.post.id}`)
-      return dispatch(closeModal())
-    })
-  }
+  createPost: (post) => dispatch(newPost(post))
 })
 
 export default withRouter(
