@@ -7,7 +7,7 @@ import { dateFormat } from '../utils'
 export default class Post extends Component {
 
   render () {
-    const { post, onDelete, onEdit } = this.props
+    const { post, onDelete, onEdit, onVoteUp, onVoteDown, onCreateComment } = this.props
     return (
       <div>
         <h3>{post.title}</h3>
@@ -21,6 +21,13 @@ export default class Post extends Component {
         <div>
           <button onClick={() => { onDelete(post.id) }}>delete</button>
           <button onClick={() => { onEdit(post) }}>edit</button>
+        </div>
+        <div>
+          <button onClick={() => { onVoteUp(post.id) }}>vote up</button>
+          <button onClick={() => { onVoteDown(post.id) }}>vote down</button>
+        </div>
+        <div>
+          <button onClick={() => { onCreateComment(post.id)}}>Add a new comment</button>
         </div>
       </div>
     )

@@ -85,14 +85,14 @@ export const fetchPost = (postId) => (dispatch, getState) => {
 
 export const voteDownPost = (postId) => (dispatch, getState) => {
   dispatch(requestPost())
-  return makeFetch(`http://localhost:5001/posts/${postId}`, 'POST', 'downVote')
+  return makeFetch(`http://localhost:5001/posts/${postId}`, 'POST', { option: 'downVote' })
     .then(response => response.json())
     .then(post => dispatch(votePost(post)))
 }
 
 export const voteUpPost = (postId) => (dispatch, getState) => {
   dispatch(requestPost())
-  return makeFetch(`http://localhost:5001/posts/${postId}`, 'POST', 'upVote')
+  return makeFetch(`http://localhost:5001/posts/${postId}`, 'POST', { option: 'upVote' })
     .then(response => response.json())
     .then(post => dispatch(votePost(post)))
 }

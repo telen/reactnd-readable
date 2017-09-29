@@ -3,6 +3,8 @@ import { makeFetch } from '../utils'
 export const REQUEST_COMMENT = 'REQUEST_COMMENT'
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS'
 export const RECEIVE_COMMENT = 'RECEIVE_COMMENT'
+export const ON_CREATE_COMMENT = 'ON_CREATE_COMMENT'
+export const CLOSE_MODAL = 'CLOSE_MODAL'
 export const CREATE_COMMENT = 'CREATE_COMMENT'
 export const EDIT_COMMENT = 'EDIT_COMMENT'
 export const DELETE_COMMENT = 'DELETE_COMMENT'
@@ -29,6 +31,20 @@ function receiveComment (comment) {
     payload: {
       comment,
     }
+  }
+}
+
+export function openCommentModal(postId) {
+  return {
+    type: ON_CREATE_COMMENT,
+    payload: {
+      postId,
+    }
+  }
+}
+export function closeCommentModal() {
+  return {
+    type: CLOSE_MODAL,
   }
 }
 

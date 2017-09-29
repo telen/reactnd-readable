@@ -3,8 +3,9 @@ import Comment from './Comment'
 
 export default class CommentList extends Component {
 
+
   render() {
-    const { commentList } = this.props
+    const { commentList, onCreateComment } = this.props
 
     return (
       <div>

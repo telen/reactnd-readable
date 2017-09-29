@@ -2,6 +2,8 @@ import {
   REQUEST_COMMENT,
   RECEIVE_COMMENTS,
   RECEIVE_COMMENT,
+  ON_CREATE_COMMENT,
+  CLOSE_MODAL,
   CREATE_COMMENT,
   EDIT_COMMENT,
   DELETE_COMMENT,
@@ -11,6 +13,10 @@ import {
 const initState = {
   comments: [],
   comment: {},
+  current: {},
+  parentId: '',
+  isModalOpen: false,
+  modalType: 'create',
 }
 
 const comment = (state = initState, action) => {
@@ -30,6 +36,18 @@ const comment = (state = initState, action) => {
       return {
         ...state,
         comment: payload.comment,
+      }
+    case ON_CREATE_COMMENT:
+      return {
+        ...state,
+        parentId: payload.postId,
+        isModalOpen: true,
+        modalType: 'create',
+      }
+    case CLOSE_MODAL:
+      return {
+        ...state,
+        isModalOpen: false,
       }
     case CREATE_COMMENT:
       const { comments } = state
