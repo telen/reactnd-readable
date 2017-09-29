@@ -11,15 +11,15 @@ export default class CommentModal extends Component {
     const { handleEditing } = this.props
     handleEditing({ body: event.target.value })
   }
-  handleSubmit(event) {
-    const { modalType, current, submitComment } = this.props
+  handleSubmit = (event) => {
+    const { modalType, currentComment, submitComment, parentId } = this.props
     if (modalType === 'create') {
-      current.timestamp = Date.now()
-      current.id = Math.random().toString(36).slice(2)
-      current.parentId = ''
+      currentComment.timestamp = Date.now()
+      currentComment.id = Math.random().toString(36).slice(2)
+      currentComment.parentId = parentId
     }
 
-    submitComment(current)
+    submitComment(currentComment)
     event.preventDefault()
   }
 

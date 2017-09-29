@@ -5,7 +5,7 @@ import {
   ON_CREATE_COMMENT,
   CLOSE_MODAL,
   CREATE_COMMENT,
-  EDIT_COMMENT,
+  EDITING_COMMENT,
   DELETE_COMMENT,
   VOTE_COMMENT,
 } from '../actions/commentActions'
@@ -47,19 +47,25 @@ const comment = (state = initState, action) => {
     case CLOSE_MODAL:
       return {
         ...state,
+        current: {},
         isModalOpen: false,
       }
     case CREATE_COMMENT:
       const { comments } = state
-
+      comments.push(payload.comment)
       return {
         ...state,
-        comments: comments.push(payload.comment),
+        comments,
       }
-    case EDIT_COMMENT:
+    case EDITING_COMMENT:
+      let { current } = state
+      current = {
+        ...current,
+        ...payload.comment,
+      }
       return {
         ...state,
-        comment: payload.comment,
+        current,
       }
     case DELETE_COMMENT:
       return state

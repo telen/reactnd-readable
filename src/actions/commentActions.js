@@ -6,7 +6,7 @@ export const RECEIVE_COMMENT = 'RECEIVE_COMMENT'
 export const ON_CREATE_COMMENT = 'ON_CREATE_COMMENT'
 export const CLOSE_MODAL = 'CLOSE_MODAL'
 export const CREATE_COMMENT = 'CREATE_COMMENT'
-export const EDIT_COMMENT = 'EDIT_COMMENT'
+export const EDITING_COMMENT = 'EDITING_COMMENT'
 export const DELETE_COMMENT = 'DELETE_COMMENT'
 export const VOTE_COMMENT = 'VODE_COMMENT'
 
@@ -72,9 +72,9 @@ function voteComment(comment) {
   }
 }
 
-function editingComment(comment) {
+export function editingComment(comment) {
   return {
-    type: EDIT_COMMENT,
+    type: EDITING_COMMENT,
     payload: {
       comment,
     }
@@ -95,7 +95,7 @@ export const fetchComment = (commentId) => (dispatch, getState) => {
     .then(comment => dispatch(receiveComment(comment)))
 }
 
-export const addComments = (comment) => (dispatch, getState) => {
+export const addComment = (comment) => (dispatch, getState) => {
   dispatch(requestComment())
   return makeFetch('http://localhost:5001/comments', 'POST', comment)
     .then(response => response.json())

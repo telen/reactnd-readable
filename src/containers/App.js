@@ -10,7 +10,7 @@ import PostList from '../components/PostList'
 import NewPostModal from '../components/NewPostModal'
 
 import { fetchAllPosts } from '../actions/postListActions'
-import { newPost } from '../actions/postActions'
+import { newPost, editingPost, onCancelCreatePost } from '../actions/postActions'
 import { openModal, closeModal } from '../actions/common'
 
 class App extends Component {

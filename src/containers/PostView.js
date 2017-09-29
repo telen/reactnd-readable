@@ -13,7 +13,8 @@ import { fetchCategories } from '../actions/postListActions'
 import { fetchPost, deletePostById,
   editPost, onCreatePost, onCancelCreatePost,
   editingPost, voteUpPost, voteDownPost } from '../actions/postActions'
-import { fetchComments, openCommentModal, closeCommentModal } from '../actions/commentActions'
+import { fetchComments, openCommentModal, closeCommentModal,
+  editingComment, addComment, editComment, deleteComment } from '../actions/commentActions'
 
 class PostView extends Component {
 
@@ -40,15 +41,23 @@ class PostView extends Component {
     })
   }
 
+  handleAddComment(comment) {
+    const { addComment, closeCommentModal, fetchComments } = this.props
+    addComment(comment).then(() => {
+      closeCommentModal()
+      fetchComments(comment.parentId)
+    })
+  }
+
   render () {
 console.log(this.props)
     const { post, currentPost, commentList, categories, newPostModalOpen } = this.props
     const { deletePost, onEditingPost, onCreatePost, onCancelCreatePost,
       voteUpPost, voteDownPost } = this.props
 
-    const { isCommentModalOpen, commentModalType, currentComment } = this.props
-    const { openCommentModal, closeCommentModal } = this.props
-      const currentItem = { ...post, ...currentPost }
+    const { isCommentModalOpen, commentModalType, currentComment, commentParentId } = this.props
+    const { openCommentModal, closeCommentModal, onEditingComment } = this.props
+    const currentItem = { ...post, ...currentPost }
 
     return (
       <div>
@@ -73,8 +82,11 @@ console.log(this.props)
         <CommentModal
           modalType={commentModalType}
           isOpen={isCommentModalOpen}
+          parentId={commentParentId}
           currentComment={currentComment}
-          closeModal={closeCommentModal} />
+          closeModal={closeCommentModal}
+          handleEditing={onEditingComment}
+          submitComment={this.handleAddComment.bind(this)} />
 
       </div>
     )
@@ -118,6 +130,8 @@ function mapDispatchToProps(dispatch) {
 
     openCommentModal: (postId) => dispatch(openCommentModal(postId)),
     closeCommentModal: () => dispatch(closeCommentModal()),
+    onEditingComment: (comment) => dispatch(editingComment(comment)),
+    addComment: (comment) => dispatch(addComment(comment)),
   }
 }
 
