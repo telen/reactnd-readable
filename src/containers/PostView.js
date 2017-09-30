@@ -7,14 +7,12 @@ import CommentList from '../components/CommentList'
 import NewPostModal from '../components/NewPostModal'
 import CommentModal from '../components/CommentModal'
 
-import history from '../utils/history'
+import CommentListView from './CommentListView'
 
 import { fetchCategories } from '../actions/postListActions'
 import { fetchPost, deletePostById,
   editPost, onCreatePost, onCancelCreatePost,
   editingPost, voteUpPost, voteDownPost } from '../actions/postActions'
-import { fetchComments, openCommentModal, closeCommentModal,
-  editingComment, addComment, editComment, deleteComment } from '../actions/commentActions'
 
 class PostView extends Component {
 
@@ -41,22 +39,11 @@ class PostView extends Component {
     })
   }
 
-  handleAddComment(comment) {
-    const { addComment, closeCommentModal, fetchComments } = this.props
-    addComment(comment).then(() => {
-      closeCommentModal()
-      fetchComments(comment.parentId)
-    })
-  }
-
   render () {
-console.log(this.props)
-    const { post, currentPost, commentList, categories, newPostModalOpen } = this.props
+    const { match, post, currentPost, commentList, categories, newPostModalOpen } = this.props
     const { deletePost, onEditingPost, onCreatePost, onCancelCreatePost,
       voteUpPost, voteDownPost } = this.props
 
-    const { isCommentModalOpen, commentModalType, currentComment, commentParentId } = this.props
-    const { openCommentModal, closeCommentModal, onEditingComment } = this.props
     const currentItem = { ...post, ...currentPost }
 
     return (
@@ -67,10 +54,9 @@ console.log(this.props)
           onDelete={this.handleDeletePost.bind(this)}
           onEdit={onCreatePost}
           onVoteUp={voteUpPost}
-          onVoteDown={voteDownPost}
-          onCreateComment={openCommentModal} />
-        <CommentList
-          commentList={commentList} />
+          onVoteDown={voteDownPost} />
+        <CommentListView
+          parentId={match.params.postId} />
         <NewPostModal
           modalType={"update"}
           isOpen={newPostModalOpen}
@@ -79,15 +65,6 @@ console.log(this.props)
           closeModal={onCancelCreatePost}
           handleEditing={onEditingPost}
           submitPost={this.handleEditPost.bind(this)} />
-        <CommentModal
-          modalType={commentModalType}
-          isOpen={isCommentModalOpen}
-          parentId={commentParentId}
-          currentComment={currentComment}
-          closeModal={closeCommentModal}
-          handleEditing={onEditingComment}
-          submitComment={this.handleAddComment.bind(this)} />
-
       </div>
     )
   }
@@ -100,23 +77,13 @@ function mapStateToProps(state, ownProps) {
     currentPost: state.post.currentPost,
     categories: state.posts.categories,
     newPostModalOpen: state.post.newPostModalOpen,
-    commentList: state.comment.comments,
 
-    comment: state.comment.comment,
-    commentParentId: state.comment.parentId,
-    isCommentModalOpen: state.comment.isModalOpen,
-    commentModalType: state.comment.modalType,
-    currentComment: state.comment.current,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchPost: (postId) => {
-      return dispatch(fetchPost(postId)).then(() => {
-        return dispatch(fetchComments(postId))
-      })
-    },
+    fetchPost: (postId) => dispatch(fetchPost(postId)),
     deletePost: (postId) => dispatch(deletePostById(postId)),
     onEditingPost: (post) => dispatch(editingPost(post)),
     editPost: (post) => dispatch(editPost(post)),
@@ -126,12 +93,6 @@ function mapDispatchToProps(dispatch) {
     onCancelCreatePost: () => dispatch(onCancelCreatePost()),
 
     fetchCategories: () => dispatch(fetchCategories()),
-    fetchComments: (postId) => dispatch(fetchComments(postId)),
-
-    openCommentModal: (postId) => dispatch(openCommentModal(postId)),
-    closeCommentModal: () => dispatch(closeCommentModal()),
-    onEditingComment: (comment) => dispatch(editingComment(comment)),
-    addComment: (comment) => dispatch(addComment(comment)),
   }
 }
 

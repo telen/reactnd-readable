@@ -3,12 +3,15 @@ import {
   RECEIVE_COMMENTS,
   RECEIVE_COMMENT,
   ON_CREATE_COMMENT,
+  ON_EDIT_COMMENT,
   CLOSE_MODAL,
   CREATE_COMMENT,
   EDITING_COMMENT,
   DELETE_COMMENT,
   VOTE_COMMENT,
 } from '../actions/commentActions'
+
+import _ from 'lodash'
 
 const initState = {
   comments: [],
@@ -42,6 +45,7 @@ const comment = (state = initState, action) => {
         ...state,
         parentId: payload.postId,
         isModalOpen: true,
+        current: {},
         modalType: 'create',
       }
     case CLOSE_MODAL:
@@ -56,6 +60,13 @@ const comment = (state = initState, action) => {
       return {
         ...state,
         comments,
+      }
+    case ON_EDIT_COMMENT:
+      return {
+        ...state,
+        current: payload.comment,
+        isModalOpen: true,
+        modalType: 'update',
       }
     case EDITING_COMMENT:
       let { current } = state

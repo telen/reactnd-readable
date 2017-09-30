@@ -4,6 +4,7 @@ export const REQUEST_COMMENT = 'REQUEST_COMMENT'
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS'
 export const RECEIVE_COMMENT = 'RECEIVE_COMMENT'
 export const ON_CREATE_COMMENT = 'ON_CREATE_COMMENT'
+export const ON_EDIT_COMMENT = 'ON_EDIT_COMMENT'
 export const CLOSE_MODAL = 'CLOSE_MODAL'
 export const CREATE_COMMENT = 'CREATE_COMMENT'
 export const EDITING_COMMENT = 'EDITING_COMMENT'
@@ -42,6 +43,14 @@ export function openCommentModal(postId) {
     }
   }
 }
+export function onEditComment(comment) {
+  return {
+    type: ON_EDIT_COMMENT,
+    payload: {
+      comment,
+    }
+  }
+}
 export function closeCommentModal() {
   return {
     type: CLOSE_MODAL,
@@ -57,9 +66,12 @@ function createComment (comment) {
   }
 }
 
-function delComment() {
+function delComment(comment) {
   return {
     type: DELETE_COMMENT,
+    payload: {
+      comment,
+    }
   }
 }
 
@@ -112,23 +124,20 @@ export const editComment = (comment) => (dispatch, getState) => {
 export const deleteComment = (commentId) => (dispatch, getState) => {
   dispatch(requestComment())
   return makeFetch(`http://localhost:5001/comments/${commentId}`, 'DELETE')
-  .then(response => {
-    if (response.status === 200) {
-      dispatch(delComment())
-    }
-  })
+  .then(response => response.json())
+  .then(comment => dispatch(delComment(comment)))
 }
 
 export const voteDownComment = (commentId) => (dispatch, getState) => {
   dispatch(requestComment())
-  return makeFetch(`http://localhost:5001/comments/${commentId}`, 'POST', 'downVote')
+  return makeFetch(`http://localhost:5001/comments/${commentId}`, 'POST', { option: 'downVote' })
     .then(response => response.json())
     .then(comment => dispatch(voteComment(comment)))
 }
 
 export const voteUpComment = (commentId) => (dispatch, getState) => {
   dispatch(requestComment())
-  return makeFetch(`http://localhost:5001/comments/${commentId}`, 'POST', 'upVote')
+  return makeFetch(`http://localhost:5001/comments/${commentId}`, 'POST', { option: 'upVote' })
     .then(response => response.json())
     .then(comment => dispatch(voteComment(comment)))
 }

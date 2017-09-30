@@ -10,8 +10,7 @@ import PostList from '../components/PostList'
 import NewPostModal from '../components/NewPostModal'
 
 import { fetchAllPosts } from '../actions/postListActions'
-import { newPost, editingPost, onCancelCreatePost } from '../actions/postActions'
-import { openModal, closeModal } from '../actions/common'
+import { newPost, editingPost, onCreatePost, onCancelCreatePost } from '../actions/postActions'
 
 class App extends Component {
   static propTypes = {
@@ -37,12 +36,12 @@ class App extends Component {
   render () {
     console.log(this.props)
     const { history, categories, postList, newPostModalOpen,
-      openEditModal, currentPost, closeEditModal, onEditingPost, createPost } = this.props
+      onCreatePost, currentPost, closeEditModal, onEditingPost, createPost } = this.props
     return (
       <div>
         <h1>Readable</h1>
         <div>
-          <button onClick={() => openEditModal() }>new post</button>
+          <button onClick={() => onCreatePost() }>new post</button>
         </div>
         <CategoryList categories={categories} />
         <PostList
@@ -65,17 +64,17 @@ const mapStateToProps = (state, ownProps) => {
   return {
     postList: state.posts.postList,
     categories: state.posts.categories,
-    newPostModalOpen: state.common.newPostModalOpen,
+    newPostModalOpen: state.post.newPostModalOpen,
     currentPost: state.post.currentPost,
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   fetchAllPosts: () => dispatch(fetchAllPosts()),
-  openEditModal: () => dispatch(openModal()),
-  closeEditModal: () => dispatch(closeModal()),
+  onCreatePost: () => dispatch(onCreatePost()),
+  closeEditModal: () => dispatch(onCancelCreatePost()),
   onEditingPost: (post) => dispatch(editingPost(post)),
-  createPost: (post) => dispatch(newPost(post))
+  createPost: (post) => dispatch(newPost(post)),
 })
 
 export default withRouter(
