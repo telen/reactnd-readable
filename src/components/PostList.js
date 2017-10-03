@@ -5,11 +5,10 @@ import DigestPost from './DigestPost'
 export default class PostList extends Component {
   static propTypes = {
     list: PropTypes.array.isRequired,
-    // onViewPost: PropTypes.func.isRequired,
   }
 
   render () {
-    const { history, list, onViewPost } = this.props
+    const { history, list } = this.props
 
     return (
       <ul>

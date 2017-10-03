@@ -11,8 +11,6 @@ import {
   VOTE_COMMENT,
 } from '../actions/commentActions'
 
-import _ from 'lodash'
-
 const initState = {
   comments: [],
   comment: {},

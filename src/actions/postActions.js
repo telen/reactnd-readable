@@ -60,12 +60,6 @@ export function editingPost(post) {
   }
 }
 
-function updatePost(post) {
-  return {
-
-  }
-}
-
 function votePost(post) {
   return {
     type: VOTE_POST,

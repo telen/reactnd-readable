@@ -20,7 +20,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { fetchAllPosts, match, history } = this.props
+    const { fetchAllPosts } = this.props
     fetchAllPosts()
   }
 
@@ -34,9 +34,8 @@ class App extends Component {
   }
 
   render () {
-    console.log(this.props)
     const { history, categories, postList, newPostModalOpen,
-      onCreatePost, currentPost, closeEditModal, onEditingPost, createPost } = this.props
+      onCreatePost, currentPost, closeEditModal, onEditingPost } = this.props
     return (
       <div>
         <h1>Readable</h1>

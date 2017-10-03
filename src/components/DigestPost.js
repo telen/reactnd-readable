@@ -9,8 +9,8 @@ import { dateFormat } from '../utils'
 export default class DigestPost extends Component {
 
   render() {
-    const { post } = this.props
-
+    const { history, post } = this.props
+    console.log(history.location.pathname)
     return (
       <div>
         <Link to={`/${post.category}/${post.id}`}><h3>{post.title}</h3></Link>

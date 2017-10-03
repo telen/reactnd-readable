@@ -1,13 +1,21 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import moment from 'moment'
-import CommentList from './CommentList'
 
 import { dateFormat } from '../utils'
 
 export default class Post extends Component {
+  static propTypes = {
+    post: PropTypes.object.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onVoteUp: PropTypes.func.isRequired,
+    onVoteDown: PropTypes.func.isRequired,
+  }
 
   render () {
-    const { post, onDelete, onEdit, onVoteUp, onVoteDown } = this.props
+    const { history, post, onDelete, onEdit, onVoteUp, onVoteDown } = this.props
+    console.log(history.location.pathname)
     return (
       <div>
         <h3>{post.title}</h3>

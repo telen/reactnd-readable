@@ -10,10 +10,14 @@ import Comment from '../components/Comment'
 import CommentModal from '../components/CommentModal'
 
 import { fetchComments, openCommentModal, closeCommentModal, onEditComment,
-  editingComment, addComment, editComment, deleteComment, voteUpComment, voteDownComment } from '../actions/commentActions'
+  editingComment, addComment, deleteComment, voteUpComment, voteDownComment } from '../actions/commentActions'
 
 
 class CommentListView extends Component {
+  static propTypes = {
+    parentId: PropTypes.string.isRequired,
+  }
+
   componentDidMount() {
     const { parentId, fetchComments } = this.props
     fetchComments(parentId)
@@ -28,7 +32,6 @@ class CommentListView extends Component {
   }
 
   render() {
-    console.log(this.props)
     const { parentId, isCommentModalOpen, commentModalType, commentList, currentComment } = this.props
     const { openCommentModal, closeCommentModal, onEditComment, onEditingComment,
       deleteComment, voteUpComment, voteDownComment } = this.props

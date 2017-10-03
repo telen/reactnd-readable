@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Post from '../components/Post'
-import CommentList from '../components/CommentList'
 import NewPostModal from '../components/NewPostModal'
-import CommentModal from '../components/CommentModal'
 
 import CommentListView from './CommentListView'
 
@@ -17,7 +14,7 @@ import { fetchPost, deletePostById,
 class PostView extends Component {
 
   componentDidMount() {
-    const { history, match, fetchPost, fetchCategories, categories } = this.props
+    const { match, fetchPost, fetchCategories, categories } = this.props
     fetchPost(match.params.postId).then(() => {
       if (categories.length === 0) {
         fetchCategories()
@@ -33,15 +30,15 @@ class PostView extends Component {
   }
 
   handleEditPost(post) {
-    const { history, editPost, onCancelCreatePost } = this.props
+    const { editPost, onCancelCreatePost } = this.props
     editPost(post).then(() => {
       onCancelCreatePost()
     })
   }
 
   render () {
-    const { match, post, currentPost, commentList, categories, newPostModalOpen } = this.props
-    const { deletePost, onEditingPost, onCreatePost, onCancelCreatePost,
+    const { match, history, post, currentPost, categories, newPostModalOpen } = this.props
+    const { onEditingPost, onCreatePost, onCancelCreatePost,
       voteUpPost, voteDownPost } = this.props
 
     const currentItem = { ...post, ...currentPost }
@@ -50,6 +47,7 @@ class PostView extends Component {
       <div>
         Post Detail:
         <Post
+          history={history}
           post={post}
           onDelete={this.handleDeletePost.bind(this)}
           onEdit={onCreatePost}
